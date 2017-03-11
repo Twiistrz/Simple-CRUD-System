@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([a-zA-Z].*)/$ $1.php
+RewriteRule ^edit/([a-zA-Z0-9]*)$ ./edit.php?id=$1
+#RewriteRule ^([a-Z]+)\/?$ $1.php [NC]
+</IfModule>
