@@ -24,7 +24,7 @@ include_once 'db.config.php';
 
 	<div class="container">
 		<div class="page-header">
-			<h2 class="text-primary">Simple Add, Edit and View Data</h2>
+			<h2 class="text-primary">Simple CRUD System</h2>
 		</div>
 
 		<div class="row">
