@@ -21,7 +21,7 @@ if(isset($_POST['add'])) {
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>Simple Add, Edit and View Data</title>
+	<title>Simple CRUD System</title>
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/bootstrap.lumen.min.css">
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/fontawesome.min.css">
@@ -30,7 +30,7 @@ if(isset($_POST['add'])) {
 
 	<div class="container">
 		<div class="page-header">
-			<h2 class="text-primary">Simple Add, Edit and View Data</h2>
+			<h2 class="text-primary">Simple CRUD System</h2>
 		</div>
 
 		<div class="row">
