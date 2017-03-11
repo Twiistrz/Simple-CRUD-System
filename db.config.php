@@ -1,10 +1,10 @@
 <?php
 
 // session_start();
-define('DBHOST','localhost');
-define('DBUSER','root');
+define('DBHOST','');
+define('DBUSER','');
 define('DBPASS','');
-define('DBNAME','db_projectone');
+define('DBNAME','');
 define('ROOTPATH',$_SERVER['DOCUMENT_ROOT']);
 define('THISPATH',dirname($_SERVER['PHP_SELF']));
 define('ONLYPATH',str_replace(ROOTPATH, '', THISPATH));
