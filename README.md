@@ -8,3 +8,5 @@ define('DBUSER',''); // Your Database Username
 define('DBPASS',''); // Your Database Password
 define('DBNAME',''); // Your Database Name
 ```
+> This Project will be updated.
+> Copyright 2017 [Emmanuel See Te](https://emmanuelseete.xyz)
