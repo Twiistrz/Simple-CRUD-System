@@ -1,6 +1,10 @@
 <?php
+
 include_once 'db.config.php';
-(!isset($_GET['s'])) ? $_GET['s'] = '' : $_GET['s'] = $user->clean($_GET['s']);
+(!isset($_GET['id']) || empty($_GET['id'])) ? $_GET['id'] = 0 : $_GET['id'] = $_GET['id'];
+if(isset($_GET['confirm']) && $_GET['confirm'] == 'confirm') {
+	$user->delete($_GET['id']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +35,7 @@ include_once 'db.config.php';
 			<div class="col-lg-12 col-md-12 col-xs-12">
 				<div>
 					<form action="<?=HTTPHOST;?>" method="GET" class="form-inline">
-						<a href="<?=HTTPHOST;?>" class="btn btn-primary <?=(!isset($_GET['s']) || empty($_GET['s']) || $_GET['s'] == 'all') ? 'active' : '';?>" data-toggle="tooltip" data-placement="top" title="View all data"><i class="fa fa-eye"></i>&nbsp;&nbsp;View All</a>
+						<a href="<?=HTTPHOST;?>" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="View all data"><i class="fa fa-eye"></i>&nbsp;&nbsp;View All</a>
 						<a href="<?=HTTPHOST;?>add/" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Add data"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add</a>
 						<div class="input-group" data-toggle="tooltip" data-placement="top" title="Search for first name or last name">
 							<input id="search" name="s" onkeyup="clean('search')" onkeydown="clean('search')" type="text" class="form-control" placeholder="Search name..." autocomplete="on">
@@ -42,21 +46,35 @@ include_once 'db.config.php';
 					</form>
 					<br/> <!-- for spacing -->
 				</div>
-				<h3>About <?=$user->viewCount($_GET['s'])?> Results</h3>
-				<div class="table-responsive">
-					<table class="table table-condensed table-bordered table-hover">
-						<thead>
-							<tr>
-								<th width="90px">Actions</th>
-								<th>ID</th>
-								<th>First name</th>
-								<th>Last name</th>
-								<th>Email</th>
-								<th>Phone number</th>
-							</tr>
-						</thead>
-						<tbody><?=$user->search($_GET['s']);?></tbody>
-					</table>
+				<div class="row">
+					<?php if($user->view($_GET['id']) != '') { ?>
+						<!-- col-lg-pull-6 col-md-pull-6 -->
+						<div class="col-lg-6 col-md-6 col-xs-12 <?=(isset($alert)) ? 'col-lg-pull-6 col-md-pull-6' : 0;?>">
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									<h2 class="panel-title">Delete this data?</h2>
+								</div>
+								<div class="panel-body">
+									<?php $data = $user->view($_GET['id']); ?>
+									<p>
+										<strong>Name:</strong>&nbsp;<?=$data['user_firstname'].' '.$data['user_lastname'];?><br />
+										<strong>Email:</strong>&nbsp;<?=$data['user_email'];?><br />
+										<strong>Phone:</strong>&nbsp;<?=$data['user_phonenumber'];?><br />
+									</p>
+								</div>
+								<div class="panel-footer">
+									<a href="<?=HTTPHOST;?>delete/<?=$data['user_id'];?>/confirm" class="btn btn-danger">Confirm</a>
+									<a href="<?=HTTPHOST;?>" class="btn btn-default">Cancel</a>
+								</div>
+							</div>
+						</div>
+					<?php } else { ?>
+						<div class="col-lg-6 col-md-6 col-xs-12">
+							<div class="alert alert-warning">
+								<strong>Error</strong>, User not found! You cannot delete that user.
+							</div>
+						</div>
+					<?php } ?>
 				</div>
 			</div>
 		</div>

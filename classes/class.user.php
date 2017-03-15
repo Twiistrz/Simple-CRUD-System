@@ -9,7 +9,7 @@ class User {
 	}
 
 	public function clean($content) {
-		// removed whitespaces and others shits and bitches
+		// removed whitespaces and other special characters
 		$string = str_replace("'", '', $content);
 		$string = preg_replace('/(\s)+[^+@._\p{L}\p{N}]/u', ' ', $string);
 		// $string = preg_replace('/(\s)+/', ' ', $string); this is just for testing fk
@@ -23,7 +23,7 @@ class User {
 			$stmt->execute();
 			return (($stmt->rowCount() > 0) ? false : true);
 		} catch (Exception $e) {
-			$errors = $e->getMessage();
+			$this->_errors[] = $e->getMessage();
 			return $errors;
 		}
 	}
@@ -40,7 +40,7 @@ class User {
 				return (($stmt->rowCount() >= 1) ? false : true);
 			}
 		} catch (Exception $e) {
-			$errors = $e->getMessage();
+			$this->_errors[] = $e->getMessage();
 			return $errors;
 		}
 	}
@@ -60,7 +60,7 @@ class User {
 			}
 
 		} catch(PDOException $e) {
-			echo $e->getMessage();
+			$this->_errors[] = $e->getMessage();
 			return false;
 		}
 	} // viewCount()
@@ -70,7 +70,7 @@ class User {
 		<tr>
 			<td>
 				<a href="<?=HTTPHOST;?>edit/<?=$user_id;?>" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i></a>
-				<a href="#" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
+				<a href="<?=HTTPHOST;?>delete/<?=$user_id;?>" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></a>
 			</td>
 			<td><?=$user_id;?></td>
 			<td><?=$user_firstname;?></td>
@@ -81,7 +81,7 @@ class User {
 
 	<?php return true; } // dataTemplate()
 
-	public function view($search = 'all') {
+	public function search($search = 'all') {
 		try {
 			if($search == 'all' || empty($search)) {
 				$stmt = $this->db->prepare("SELECT * FROM users ORDER BY user_id DESC");
@@ -129,10 +129,10 @@ class User {
 
 			}
 		} catch(PDOException $e) {
-			$errors[] = $e->getMessage();
+			$this->_errors[] = $e->getMessage();
 			return false;
 		}
-	} // view()
+	} // search()
 
 	public function edit($user_id,$user_firstname,$user_lastname,$user_email,$user_phonenumber) {
 		try {
@@ -155,12 +155,12 @@ class User {
 				return false;
 			}
 		} catch(PDOException $e) {
-			$errors = $e->getMessage();
+			$this->_errors[] = $e->getMessage();
 			return false;
 		}
 	} // edit()
 
-	public function editView($user_id) {
+	public function view($user_id) {
 		try {
 			$user_id = $this->clean($user_id);
 			$stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = :user_id LIMIT 1");
@@ -173,34 +173,65 @@ class User {
 				return false;
 			}
 		} catch(PDOException $e) {
-			$errors = $e->getMessage();
+			$this->_errors[] = $e->getMessage();
 			return false;
 		}
-	} // editView()
+	} // view()
 
 	public function add($user_firstname,$user_lastname,$user_email,$user_phonenumber) {
 		try {
 			if($this->addCheckEmail($user_email)) {
-				$stmt = $this->db->prepare("INSERT INTO users (user_firstname,user_lastname,user_email,user_phonenumber) 
-					VALUES (:user_firstname,:user_lastname,:user_email,:user_phonenumber)");
-				$stmt->execute(array(
-					':user_firstname'	=> $user_firstname,
-					':user_lastname'	=> $user_lastname,
-					':user_email'		=> $user_email,
-					':user_phonenumber'	=> $user_phonenumber
-					));
-				return true;
+				if(!empty($user_firstname) &&
+					!empty($user_lastname) &&
+					!empty($user_email) &&
+					!empty($user_phonenumber)) {
+					$stmt = $this->db->prepare("INSERT INTO users (user_firstname,user_lastname,user_email,user_phonenumber) 
+						VALUES (:user_firstname,:user_lastname,:user_email,:user_phonenumber)");
+					$stmt->execute(array(
+						':user_firstname'	=> $user_firstname,
+						':user_lastname'	=> $user_lastname,
+						':user_email'		=> $user_email,
+						':user_phonenumber'	=> $user_phonenumber
+						));
+					return true;
+				} else {
+					$this->_errors[] = 'All fields required';
+				}
 			} else {
 				$this->_errors[] = 'Email already exists';
 				return false;
 			}
 		} catch (Exception $e) {
-			$errors = $e->getMessage();
+			if(empty($user_firstname) ||
+				empty($user_lastname) ||
+				empty($user_email) ||
+				empty($user_phonenumber)) {
+				$this->_errors[] = 'All fields required';
+			}
+			$this->_errors[] = $e->getMessage();
 			return false;
 		}
 	} // add()
 
-	// will update this shit.
+	public function delete($user_id) {
+		try {
+			$stmt = $this->db->prepare("SELECT * FROM users WHERE user_id = :user_id");
+			$stmt->bindParam(':user_id',$user_id);
+			$stmt->execute();
+			if($stmt->rowCount() > 0) {
+				$stmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
+				$stmt->bindParam(':user_id',$user_id);
+				$stmt->execute();
+				header('Location:'.HTTPHOST);
+				return true;
+			}
+			return false;
+		} catch (Exception $e) {
+			$this->_errors[] = $e->getMessage();
+			return false;
+		}
+	}
+
 	public function errors() {
 		// return $this->_errors;
 		// echo '<ul>';

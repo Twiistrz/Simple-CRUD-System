@@ -26,6 +26,13 @@ if(isset($_POST['update'])) {
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/bootstrap.lumen.min.css">
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/fontawesome.min.css">
+	<script>
+		function clean(e) { //e for element
+			var string = document.getElementById(e);
+			var regex = /[^a-z0-9\s]/gi;
+			string.value = string.value.replace(regex, '');
+		}
+	</script>
 </head>
 <body>
 
@@ -41,7 +48,7 @@ if(isset($_POST['update'])) {
 						<a href="<?=HTTPHOST;?>" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="View all data"><i class="fa fa-eye"></i>&nbsp;&nbsp;View All</a>
 						<a href="<?=HTTPHOST;?>add/" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Add data"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add</a>
 						<div class="input-group" data-toggle="tooltip" data-placement="top" title="Search for first name or last name">
-							<input name="s" type="text" class="form-control" placeholder="Search name..." autocomplete="on">
+							<input id="search" name="s" onkeyup="clean('search')" onkeydown="clean('search')" type="text" class="form-control" placeholder="Search name..." autocomplete="on">
 							<div class="input-group-btn">
 								<button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="false"></i></button>
 							</div>
@@ -68,20 +75,20 @@ if(isset($_POST['update'])) {
 					</div>
 					<?php } ?>
 
-					<?php if($user->editView($_GET['id']) != '') { ?>
+					<?php if($user->view($_GET['id']) != '') { ?>
 						<!-- col-lg-pull-6 col-md-pull-6 -->
 						<div class="col-lg-6 col-md-6 col-xs-12 <?=(isset($alert)) ? 'col-lg-pull-6 col-md-pull-6' : 0;?>">
 							<div class="panel panel-primary">
 								<div class="panel-body">
-									<?php $data = $user->editView($_GET['id']); ?>
+									<?php $data = $user->view($_GET['id']); ?>
 									<form action="<?=HTTPHOST;?>edit.php?id=<?=$data['user_id'];?>" method="POST">
 										<div class="form-group">
 											<label for="firstname">First name <span class="text-warning">*</span></label>
-											<input value="<?=$data['user_firstname'];?>" name="firstname" type="text" class="form-control" placeholder="First name" required>
+											<input id="fname" value="<?=$data['user_firstname'];?>" onkeyup="clean('fname')" onkeydown="clean('fname')" name="firstname" type="text" class="form-control" placeholder="First name" required>
 										</div>
 										<div class="form-group">
 											<label for="lastname">Last name <span class="text-warning">*</span></label>
-											<input value="<?=$data['user_lastname'];?>" name="lastname" type="text" class="form-control" placeholder="Last name" required>
+											<input id="lname" value="<?=$data['user_lastname'];?>" onkeyup="clean('lname')" onkeydown="clean('lname')" name="lastname" type="text" class="form-control" placeholder="Last name" required>
 										</div>
 										<div class="form-group">
 											<label for="email">Email <span class="text-warning">*</span></label>
@@ -89,7 +96,7 @@ if(isset($_POST['update'])) {
 										</div>
 										<div class="form-group">
 											<label for="phonenumber">Phone number <span class="text-warning">*</span></label>
-											<input value="<?=$data['user_phonenumber'];?>" name="phonenumber" type="text" class="form-control" placeholder="Phone number" required>
+											<input id="phonenumber" value="<?=$data['user_phonenumber'];?>" onkeyup="clean('phonenumber')" onkeydown="clean('phonenumber')" name="phonenumber" type="text" class="form-control" placeholder="Phone number" required>
 										</div>
 										<input value="<?=$data['user_id'];?>" type="hidden" name="id" value="<?=$_GET['id'];?>">
 										<button name="update" type="submit" class="btn btn-primary btn-block">update data</button>

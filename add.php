@@ -25,6 +25,13 @@ if(isset($_POST['add'])) {
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/bootstrap.lumen.min.css">
 	<link rel="stylesheet" href="<?=HTTPHOST;?>assets/css/fontawesome.min.css">
+	<script>
+		function clean(e) { //e for element
+			var string = document.getElementById(e);
+			var regex = /[^a-z0-9\s]/gi;
+			string.value = string.value.replace(regex, '');
+		}
+	</script>
 </head>
 <body>
 
@@ -40,7 +47,7 @@ if(isset($_POST['add'])) {
 						<a href="<?=HTTPHOST;?>" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="View all data"><i class="fa fa-eye"></i>&nbsp;&nbsp;View All</a>
 						<a href="<?=HTTPHOST;?>add/" class="btn btn-primary active" data-toggle="tooltip" data-placement="top" title="Add data"><i class="fa fa-plus"></i>&nbsp;&nbsp;Add</a>
 						<div class="input-group" data-toggle="tooltip" data-placement="top" title="Search for first name or last name">
-							<input name="s" type="text" class="form-control" placeholder="Search name..." autocomplete="on">
+							<input id="search" name="s" type="text" onkeyup="clean('search')" onkeydown="clean('search')" class="form-control" placeholder="Search name..." autocomplete="on">
 							<div class="input-group-btn">
 								<button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="false"></i></button>
 							</div>
@@ -73,11 +80,11 @@ if(isset($_POST['add'])) {
 								<form action="<?=HTTPHOST;?>add.php" method="POST">
 									<div class="form-group">
 										<label for="firstname">First name <span class="text-warning">*</span></label>
-										<input name="firstname" type="text" class="form-control" placeholder="First name">
+										<input id="fname" name="firstname" onkeyup="clean('fname')" onkeydown="clean('fname')" type="text" class="form-control" placeholder="First name">
 									</div>
 									<div class="form-group">
 										<label for="lastname">Last name <span class="text-warning">*</span></label>
-										<input name="lastname" type="text" class="form-control" placeholder="Last name">
+										<input id="lname" name="lastname" onkeyup="clean('lname')" onkeydown="clean('lname')" type="text" class="form-control" placeholder="Last name">
 									</div>
 									<div class="form-group">
 										<label for="email">Email <span class="text-warning">*</span></label>
@@ -85,7 +92,7 @@ if(isset($_POST['add'])) {
 									</div>
 									<div class="form-group">
 										<label for="phonenumber">Phone number <span class="text-warning">*</span></label>
-										<input name="phonenumber" type="text" class="form-control" placeholder="Phone number">
+										<input id="phonenumber" name="phonenumber" onkeyup="clean('phonenumber')" onkeydown="clean('phonenumber')" type="text" class="form-control" placeholder="Phone number">
 									</div>
 									<button type="submit" name="add" class="btn btn-success btn-block">Add data</button>
 								</form>
